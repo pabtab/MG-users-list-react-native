@@ -15,9 +15,11 @@ const UsersList = (props) => {
     dispatch(callUsersListApi());
   }, [])
 
-  const goToDetail = (item) => {
+  const goToDetail = (item, name) => {
     dispatch(setDetailUser(item));
-    props.navigation.navigate('UserDetail');
+    props.navigation.navigate('UserDetail', {
+      UserName: name
+    });
   }
 
   const renderKey = (item) => item.login.username
@@ -29,7 +31,7 @@ const UsersList = (props) => {
     return (
       
       <ListItemComponent 
-        handleClickDetail={() => goToDetail(item)} 
+        handleClickDetail={() => goToDetail(item, name)} 
         name={name}
         image={item.picture.thumbnail}
       />

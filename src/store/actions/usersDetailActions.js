@@ -3,7 +3,7 @@ import { put, takeLatest } from 'redux-saga/effects';
 import { GET_USER_DETAIL, GET_USER_DETAIL_ASYNC } from './actionTypes';
 
 function* setDetailUserAction(userSelected) {
-  yield put({type: GET_USER_DETAIL, payload: userSelected})
+  yield put({type: GET_USER_DETAIL, payload: userSelected.payload})
 }
 
 export function* setDetailUserAsync() {

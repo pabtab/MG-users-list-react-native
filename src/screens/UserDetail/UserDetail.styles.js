@@ -9,7 +9,7 @@ const Styles = StyleSheet.create({
   profilePic: {
     width: 100,
     height: 100,
-    borderRadius: 100
+    borderRadius: 100,
   },
   addIconPic: {
     marginTop: -25,

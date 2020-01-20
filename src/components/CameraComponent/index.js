@@ -20,8 +20,7 @@ const CameraComponent = (props) => {
 
   const takePicture = async () => {
     if (cameraRef) {
-      let photo = await cameraRef.takePictureAsync();
-      console.log('oeeeeeeee')
+      let photo = await cameraRef.takePictureAsync({skipProcessing: true});
       props.handlePhoto(photo);
     }
   }

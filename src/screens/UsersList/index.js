@@ -1,19 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import { Container, Header, Content } from 'native-base';
 
-import { FlatList, ActivityIndicator } from 'react-native';
+import { FlatList, ActivityIndicator, View } from 'react-native';
 import { callUsersListApi } from '../../store/actions/usersListActions';
 import ListItemComponent from '../../components/ListItemComponent';
 import { setDetailUser } from '../../store/actions/usersDetailActions';
 
 const UsersList = (props) => {
+  const [page, setPage] = useState(1);
   const dispatch = useDispatch();
   const { payload: usersList, isLoading: loadingUsers } = useSelector(state => state.UsersList);
 
   useEffect(() => {
-    dispatch(callUsersListApi());
+    dispatch(callUsersListApi(page));
   }, [])
+
+  const getMoreUsers = () => {
+    if (!loadingUsers && page < 10) {
+      const pageNum = page + 1;
+      setPage(pageNum);
+      dispatch(callUsersListApi(pageNum));
+    }
+  }
 
   const goToDetail = (item, name) => {
     dispatch(setDetailUser(item));
@@ -38,20 +47,27 @@ const UsersList = (props) => {
     );
   }
 
+  const renderFooter = () => {
+    if (loadingUsers) {
+      return <ActivityIndicator />;
+    }
+
+    return <View />;
+  }
+
   return (
-    <Container>
-      <Content>
-        {
-          loadingUsers
-          ? <ActivityIndicator />
-          : <FlatList
-              data={usersList}
-              renderItem={renderListItem}
-              keyExtractor={renderKey}
-            />
-        }
-      </Content>
-    </Container>
+    <View>
+      <FlatList
+        data={usersList}
+        renderItem={renderListItem}
+        keyExtractor={renderKey}
+        onEndReachedThreshold={0.2}
+        onEndReached={getMoreUsers}
+        ListEmptyComponent={<View></View>}
+        initialNumToRender={30}
+        ListFooterComponent={renderFooter}
+      />
+    </View>
   );
 }
 

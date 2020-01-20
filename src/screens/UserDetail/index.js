@@ -1,20 +1,22 @@
 import React, {useState} from 'react';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import { AntDesign } from '@expo/vector-icons';
-
 import { View } from 'react-native';
 import { Thumbnail, ListItem, List, Text } from 'native-base';
+
 import Styles from './UserDetail.styles';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import CameraComponent from '../../components/CameraComponent';
+import { updateProfileAction } from '../../store/actions/updateProfilePicAction';
 
 
 const UserDetail = (props) => {
   const name = props.navigation.getParam('UserName');
   const [cameraOpen, setCameraOpen] = useState(false);
   const [photoUri, setPhotoUri] = useState('');
+  const dispatch = useDispatch();
 
-  const { payload: userDetail } = useSelector(state => state.UserDetail.payload);
+  const { payload: userDetail } = useSelector(state => state.UserDetail);
 
   const changePictureProfile = () => {
     setCameraOpen(true);
@@ -23,6 +25,18 @@ const UserDetail = (props) => {
   const getPhoto = (photoUrl) => {
     setCameraOpen(false);
     setPhotoUri(photoUrl.uri);
+    updateProfile(photoUrl.uri);
+  }
+
+  const updateProfile = (photoUrl) => {
+    const newUpdateProfile = { 
+      ...userDetail,
+      picture: {
+        thumbnail: photoUrl
+      }
+    };
+
+    dispatch(updateProfileAction(newUpdateProfile));
   }
   
   if (cameraOpen) {

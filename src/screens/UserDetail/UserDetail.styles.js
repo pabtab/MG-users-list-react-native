@@ -4,7 +4,7 @@ const Styles = StyleSheet.create({
   profileContainer: {
     height: 200,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   profilePic: {
     width: 100,

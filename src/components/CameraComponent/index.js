@@ -47,7 +47,9 @@ const CameraComponent = (props) => {
             backgroundColor: 'transparent',
             flexDirection: 'row',
           }}>
-            <TouchableOpacity style={Styles.iconTouchable}>
+            <TouchableOpacity 
+              onPress={props.closeCamera}
+              style={Styles.iconTouchable}>
               <Ionicons name="md-close" style={Styles.icons} />
             </TouchableOpacity>
             <TouchableOpacity 

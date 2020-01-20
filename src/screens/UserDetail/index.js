@@ -3,6 +3,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import { AntDesign } from '@expo/vector-icons';
 import { View } from 'react-native';
 import { Thumbnail, ListItem, List, Text } from 'native-base';
+import {HeaderBackButton} from 'react-navigation-stack';
 
 import Styles from './UserDetail.styles';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
@@ -19,13 +20,19 @@ const UserDetail = (props) => {
   const { payload: userDetail } = useSelector(state => state.UserDetail);
 
   const changePictureProfile = () => {
+    props.navigation.setParams({ hideBackButton: true});
     setCameraOpen(true);
   }
 
   const getPhoto = (photoUrl) => {
-    setCameraOpen(false);
+    closeCamera();
     setPhotoUri(photoUrl.uri);
     updateProfile(photoUrl.uri);
+  }
+
+  const closeCamera = () => {
+    props.navigation.setParams({ hideBackButton: false});
+    setCameraOpen(false);
   }
 
   const updateProfile = (photoUrl) => {
@@ -40,15 +47,20 @@ const UserDetail = (props) => {
   }
   
   if (cameraOpen) {
-    return <CameraComponent handlePhoto={getPhoto} />;
+    return <CameraComponent 
+      handlePhoto={getPhoto}
+      closeCamera={closeCamera}
+    />;
   }
 
   return (
     <View>
-      <TouchableWithoutFeedback style={Styles.profileContainer} onPress={changePictureProfile}>
-        <Thumbnail large source={{uri: photoUri || userDetail.picture.thumbnail}} style={Styles.profilePic}/>
-        <AntDesign name="pluscircle" style={Styles.addIconPic} />
-      </TouchableWithoutFeedback>
+      <View style={Styles.profileContainer}>
+        <TouchableWithoutFeedback onPress={changePictureProfile}>
+          <Thumbnail large source={{uri: photoUri || userDetail.picture.thumbnail}} style={Styles.profilePic}/>
+          <AntDesign name="pluscircle" style={Styles.addIconPic} />
+        </TouchableWithoutFeedback>
+      </View>
       <View>
         <List>
           <ListItem style={Styles.userValue}>
@@ -74,8 +86,17 @@ const UserDetail = (props) => {
   );
 };
 
-UserDetail.navigationOptions = navData => ({
-  headerTitle: 'User Detail'
+UserDetail.navigationOptions = ({navigation}) => ({
+  headerTitle: 'Detail',
+  headerLeft: () => {
+    if (navigation.getParam('hideBackButton')) {
+      return null
+    }
+
+    return <HeaderBackButton 
+      onPress={() => navigation.goBack()}
+    />
+  }
 })
 
 export default UserDetail;
